@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>簡單網頁範例</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>歡迎來到我的簡單網頁</h1>
+    <p>這是一個用 HTML 和 CSS 建立的範例頁面。</p>
+  </header>
+
+  <main>
+    <section id="self-intro" class="intro">
+      <h2>自我介紹</h2>
+      <div class="intro-content">
+        <img class="avatar" src="https://via.placeholder.com/120" alt="大頭照" />
+        <div class="intro-text" id="introText">
+          <h3 id="introName">你的名字</h3>
+          <p id="introBio">你好，我是 ...（點擊編輯以修改）</p>
+        </div>
+      </div>
+      <div class="intro-controls">
+        <button class="button" id="toggleBtn">隱藏介紹</button>
+        <button class="button" id="editBtn">編輯自我介紹</button>
+      </div>
+      <div class="edit-area" id="editArea" hidden>
+        <input type="text" id="nameInput" placeholder="名字" />
+        <textarea id="bioInput" rows="4" placeholder="自我介紹內容"></textarea>
+        <div>
+          <button class="button" id="saveBtn">儲存</button>
+          <button class="button" id="cancelBtn">取消</button>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>關於這個網頁</h2>
+      <p>這個網頁包含自我介紹、編輯功能以及按鈕互動效果。</p>
+    </section>
+
+    <section class="cards">
+      <article class="card">
+        <h3>設計簡單明瞭</h3>
+        <p>利用 CSS 讓頁面看起來清爽、易讀。</p>
+      </article>
+      <article class="card">
+        <h3>快速上手</h3>
+        <p>只要打開 index.html，就能在瀏覽器查看內容。</p>
+      </article>
+    </section>
+
+    <section>
+      <h2>聯絡我</h2>
+      <p>如果你想擴充這個頁面，可以加上更多內容或圖片。</p>
+      <a class="button" href="#">按我試試</a>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 簡單網頁示例</p>
+  </footer>
+
+  <script>
+    (function () {
+      const introTextEl = document.getElementById('introText');
+      const toggleBtn = document.getElementById('toggleBtn');
+      const editBtn = document.getElementById('editBtn');
+      const editArea = document.getElementById('editArea');
+      const nameInput = document.getElementById('nameInput');
+      const bioInput = document.getElementById('bioInput');
+      const saveBtn = document.getElementById('saveBtn');
+      const cancelBtn = document.getElementById('cancelBtn');
+      const introName = document.getElementById('introName');
+      const introBio = document.getElementById('introBio');
+
+      function load() {
+        try {
+          const data = JSON.parse(localStorage.getItem('selfIntro') || '{}');
+          if (data.name) introName.textContent = data.name;
+          if (data.bio) introBio.textContent = data.bio;
+        } catch (e) {
+          // ignore invalid localStorage data
+        }
+      }
+
+      function openEdit() {
+        nameInput.value = introName.textContent === '你的名字' ? '' : introName.textContent;
+        bioInput.value = introBio.textContent === '你好，我是 ...（點擊編輯以修改）' ? '' : introBio.textContent;
+        editArea.hidden = false;
+      }
+
+      function closeEdit() {
+        editArea.hidden = true;
+      }
+
+      toggleBtn.addEventListener('click', function () {
+        if (introTextEl.style.display === 'none') {
+          introTextEl.style.display = '';
+          toggleBtn.textContent = '隱藏介紹';
+        } else {
+          introTextEl.style.display = 'none';
+          toggleBtn.textContent = '顯示介紹';
+        }
+      });
+
+      editBtn.addEventListener('click', openEdit);
+      cancelBtn.addEventListener('click', closeEdit);
+
+      saveBtn.addEventListener('click', function () {
+        const name = nameInput.value.trim() || '匿名';
+        const bio = bioInput.value.trim() || '這位朋友還沒留下自我介紹。';
+        introName.textContent = name;
+        introBio.textContent = bio;
+        localStorage.setItem('selfIntro', JSON.stringify({ name: name, bio: bio }));
+        closeEdit();
+      });
+
+      load();
+    })();
+  </script>
+</body>
+</html>
