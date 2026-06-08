@@ -3,123 +3,96 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>簡單網頁範例</title>
+  <title>背單字小幫手</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <h1>歡迎來到我的簡單網頁</h1>
-    <p>這是一個用 HTML 和 CSS 建立的範例頁面。</p>
-  </header>
+  <div class="app-shell">
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">純前端練習</p>
+        <h1>背單字小幫手</h1>
+        <p class="subtitle">點擊卡片翻頁，管理頁自行新增與自動填入單字資訊。</p>
+      </div>
+      <nav class="tab-bar" role="tablist" aria-label="應用頁面">
+        <button id="studyTab" class="tab active" role="tab" aria-selected="true">單字卡</button>
+        <button id="manageTab" class="tab" role="tab" aria-selected="false">管理頁</button>
+      </nav>
+    </header>
 
-  <main>
-    <section id="self-intro" class="intro">
-      <h2>自我介紹</h2>
-      <div class="intro-content">
-        <img class="avatar" src="https://via.placeholder.com/120" alt="大頭照" />
-        <div class="intro-text" id="introText">
-          <h3 id="introName">你的名字</h3>
-          <p id="introBio">你好，我是 ...（點擊編輯以修改）</p>
+    <main>
+      <section id="studyPage" class="page active" role="tabpanel">
+        <div class="study-panel">
+          <div class="card-frame">
+            <div class="flip-card">
+              <div class="flip-card-inner">
+                <div class="flip-card-face card-front" id="cardFront">請新增單字</div>
+                <div class="flip-card-face card-back" id="cardBack">
+                  <p>卡片背面顯示單字資訊，請前往管理頁新增。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="study-meta">
+            <label for="wordSelect">選擇單字</label>
+            <select id="wordSelect" class="field"></select>
+            <p class="hint">卡片點擊可翻面，查看例句與字根分析。</p>
+          </div>
         </div>
-      </div>
-      <div class="intro-controls">
-        <button class="button" id="toggleBtn">隱藏介紹</button>
-        <button class="button" id="editBtn">編輯自我介紹</button>
-      </div>
-      <div class="edit-area" id="editArea" hidden>
-        <input type="text" id="nameInput" placeholder="名字" />
-        <textarea id="bioInput" rows="4" placeholder="自我介紹內容"></textarea>
-        <div>
-          <button class="button" id="saveBtn">儲存</button>
-          <button class="button" id="cancelBtn">取消</button>
+      </section>
+
+      <section id="managePage" class="page" role="tabpanel" hidden>
+        <div class="manage-grid">
+          <form id="addForm" class="manage-form">
+            <div class="form-header">
+              <h2 id="editIndicator">新增單字</h2>
+              <p class="mini-text">輸入欄位後可儲存至本機，並可透過自動填入補齊資料。</p>
+            </div>
+            <label>英文單字</label>
+            <input id="wordInput" class="field" type="text" placeholder="例如：knowledge" autocomplete="off" required />
+
+            <label>中文翻譯</label>
+            <input id="translateInput" class="field" type="text" placeholder="例如：知識" />
+
+            <label>詞性</label>
+            <input id="posInput" class="field" type="text" placeholder="例如：noun, verb" />
+
+            <label>例句</label>
+            <textarea id="exampleInput" class="field" rows="3" placeholder="例如：She gained a lot of knowledge from reading."></textarea>
+
+            <label>字根分析</label>
+            <textarea id="rootInput" class="field" rows="3" placeholder="例如：know（知道）+ledge（名詞字尾）"></textarea>
+
+            <div class="button-row">
+              <button id="autoFillButton" type="button" class="button secondary">自動填入</button>
+              <button id="saveButton" type="submit" class="button">儲存單字</button>
+              <button id="deleteButton" type="button" class="button danger" hidden>刪除單字</button>
+            </div>
+            <p id="statusMessage" class="status-message"></p>
+          </form>
+
+          <div class="manage-list">
+            <h2>單字列表</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>英文</th>
+                  <th>翻譯</th>
+                  <th>詞性</th>
+                  <th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="wordListBody"></tbody>
+            </table>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </main>
 
-    <section>
-      <h2>關於這個網頁</h2>
-      <p>這個網頁包含自我介紹、編輯功能以及按鈕互動效果。</p>
-    </section>
-
-    <section class="cards">
-      <article class="card">
-        <h3>設計簡單明瞭</h3>
-        <p>利用 CSS 讓頁面看起來清爽、易讀。</p>
-      </article>
-      <article class="card">
-        <h3>快速上手</h3>
-        <p>只要打開 index.html，就能在瀏覽器查看內容。</p>
-      </article>
-    </section>
-
-    <section>
-      <h2>聯絡我</h2>
-      <p>如果你想擴充這個頁面，可以加上更多內容或圖片。</p>
-      <a class="button" href="#">按我試試</a>
-    </section>
-  </main>
-
-  <footer>
-    <p>© 2026 簡單網頁示例</p>
-  </footer>
-
-  <script>
-    (function () {
-      const introTextEl = document.getElementById('introText');
-      const toggleBtn = document.getElementById('toggleBtn');
-      const editBtn = document.getElementById('editBtn');
-      const editArea = document.getElementById('editArea');
-      const nameInput = document.getElementById('nameInput');
-      const bioInput = document.getElementById('bioInput');
-      const saveBtn = document.getElementById('saveBtn');
-      const cancelBtn = document.getElementById('cancelBtn');
-      const introName = document.getElementById('introName');
-      const introBio = document.getElementById('introBio');
-
-      function load() {
-        try {
-          const data = JSON.parse(localStorage.getItem('selfIntro') || '{}');
-          if (data.name) introName.textContent = data.name;
-          if (data.bio) introBio.textContent = data.bio;
-        } catch (e) {
-          // ignore invalid localStorage data
-        }
-      }
-
-      function openEdit() {
-        nameInput.value = introName.textContent === '你的名字' ? '' : introName.textContent;
-        bioInput.value = introBio.textContent === '你好，我是 ...（點擊編輯以修改）' ? '' : introBio.textContent;
-        editArea.hidden = false;
-      }
-
-      function closeEdit() {
-        editArea.hidden = true;
-      }
-
-      toggleBtn.addEventListener('click', function () {
-        if (introTextEl.style.display === 'none') {
-          introTextEl.style.display = '';
-          toggleBtn.textContent = '隱藏介紹';
-        } else {
-          introTextEl.style.display = 'none';
-          toggleBtn.textContent = '顯示介紹';
-        }
-      });
-
-      editBtn.addEventListener('click', openEdit);
-      cancelBtn.addEventListener('click', closeEdit);
-
-      saveBtn.addEventListener('click', function () {
-        const name = nameInput.value.trim() || '匿名';
-        const bio = bioInput.value.trim() || '這位朋友還沒留下自我介紹。';
-        introName.textContent = name;
-        introBio.textContent = bio;
-        localStorage.setItem('selfIntro', JSON.stringify({ name: name, bio: bio }));
-        closeEdit();
-      });
-
-      load();
-    })();
-  </script>
+    <footer class="app-footer">
+      <p>© 2026 背單字小幫手 • 純前端實作</p>
+    </footer>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
