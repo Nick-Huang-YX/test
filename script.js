@@ -84,12 +84,14 @@ async function sendWordToBackend(item) {
   }
 
   try {
+    const formData = new URLSearchParams();
+    Object.entries(item).forEach(([key, value]) => {
+      formData.append(key, value || '');
+    });
+
     const response = await fetch(GAS_WEB_APP_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(item)
+      body: formData
     });
 
     if (!response.ok) {

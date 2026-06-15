@@ -61,7 +61,10 @@ function doPost(e) {
       throw new Error(`找不到工作表：${sheetName}`);
     }
 
-    const data = JSON.parse(e.postData.contents || '{}');
+    const data = Object.keys(e.parameter || {}).length
+      ? e.parameter
+      : JSON.parse(e.postData.contents || '{}');
+
     const row = [
       new Date(),
       data.word || '',
@@ -138,6 +141,7 @@ const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/你的部署ID/exec'
 
 ### 4.1 CORS 與本機檔案問題
 - 若你直接用 `file://` 開啟 `index.html`，瀏覽器可能會因為 CORS 或本機檔案限制而無法正常送出請求。
+- 本案例已將前端改為 `application/x-www-form-urlencoded` 形式的 POST，避免觸發瀏覽器的 CORS preflight 檢查。
 - 建議使用本機伺服器執行，例如：
   - `python3 -m http.server 8000`
   - 或 `npx http-server .`
