@@ -109,6 +109,12 @@ function doGet(e) {
 
 > 注意：若你只想讓內部管理者使用，也可以改成 `任何有 Google 帳戶者`，但測試時需確認前端與後端的存取權限相容。
 
+### 2.4 常見 CORS 確認項目
+- 請務必使用 `exec` URL，而不是 `dev` URL。
+- 確認 Apps Script `doPost` 回傳時包含 `Access-Control-Allow-Origin: *`。
+- 若你在 GitHub Pages 上執行前端，且後端回應返回 302 或導向 Google 登入頁，就會造成 CORS 錯誤。
+- 若仍然發生 CORS 錯誤，請重新部署 Web 應用程式，並用最新部署的 `exec` URL 更新前端 `GAS_WEB_APP_URL`。
+
 ## 3. 連結前端與後端
 
 ### 3.1 更新前端 `script.js`

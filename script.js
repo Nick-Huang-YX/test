@@ -91,7 +91,11 @@ async function sendWordToBackend(item) {
 
     const response = await fetch(GAS_WEB_APP_URL, {
       method: 'POST',
-      body: formData
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      },
+      body: formData,
+      mode: 'cors'
     });
 
     if (!response.ok) {
