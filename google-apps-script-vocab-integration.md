@@ -78,15 +78,11 @@ function doPost(e) {
 
     return ContentService
       .createTextOutput(JSON.stringify({ status: 'ok' }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeader('Access-Control-Allow-Origin', '*')
-      .setHeader('Access-Control-Allow-Methods', 'POST');
+      .setMimeType(ContentService.MimeType.JSON);
   } catch (error) {
     return ContentService
       .createTextOutput(JSON.stringify({ status: 'error', message: error.message }))
-      .setMimeType(ContentService.MimeType.JSON)
-      .setHeader('Access-Control-Allow-Origin', '*')
-      .setHeader('Access-Control-Allow-Methods', 'POST');
+      .setMimeType(ContentService.MimeType.JSON);
   }
 }
 
@@ -111,9 +107,9 @@ function doGet(e) {
 
 ### 2.4 常見 CORS 確認項目
 - 請務必使用 `exec` URL，而不是 `dev` URL。
-- 確認 Apps Script `doPost` 回傳時包含 `Access-Control-Allow-Origin: *`。
-- 若你在 GitHub Pages 上執行前端，且後端回應返回 302 或導向 Google 登入頁，就會造成 CORS 錯誤。
-- 若仍然發生 CORS 錯誤，請重新部署 Web 應用程式，並用最新部署的 `exec` URL 更新前端 `GAS_WEB_APP_URL`。
+- 在 Apps Script 中，`ContentService.createTextOutput(...).setMimeType(...)` 是可用的；但 `setHeader()` 不是 `TextOutput` 的方法，因此請勿使用它。
+- 若你在 GitHub Pages 或 `app.github.dev` 上執行前端，且後端回應返回 302 或導向 Google 登入頁，就會造成 CORS 或授權錯誤。
+- 如果部署後仍遇到 CORS 錯誤，請重新部署 Web 應用程式，並用最新部署的 `exec` URL 更新前端 `GAS_WEB_APP_URL`。
 
 ## 3. 連結前端與後端
 

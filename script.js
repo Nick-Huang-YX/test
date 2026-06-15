@@ -95,8 +95,12 @@ async function sendWordToBackend(item) {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
       },
       body: formData,
-      mode: 'cors'
+      mode: 'no-cors'
     });
+
+    if (response.type === 'opaque') {
+      return { ok: true, data: null };
+    }
 
     if (!response.ok) {
       const text = await response.text();
