@@ -1,4 +1,6 @@
 const STORAGE_KEY = 'vocabCardsData';
+const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyPBu_H_jMJg1EEmWIPE9jMqA4HraR5pFl_Ut3iH5cQV2T7qlKm8988ngGv1w75JSc/exec';
+
 const defaultCards = [
   {
     word: 'apple',
@@ -73,6 +75,31 @@ function showStatus(message, type = 'info') {
       elements.statusMessage.textContent = '';
       elements.statusMessage.className = 'status-message';
     }, 4500);
+  }
+}
+
+async function sendWordToBackend(item) {
+  if (!GAS_WEB_APP_URL || GAS_WEB_APP_URL.includes('XXXXXXXX')) {
+    return { ok: false, error: '請先在 script.js 中設定 GAS_WEB_APP_URL。' };
+  }
+
+  try {
+    const response = await fetch(GAS_WEB_APP_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(item)
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      return { ok: false, error: `後端回傳錯誤：${response.status} ${response.statusText} ${text}` };
+    }
+
+    return { ok: true, data: await response.json().catch(() => null) };
+  } catch (error) {
+    return { ok: false, error: error.message || '網路連線失敗' };
   }
 }
 
@@ -219,13 +246,14 @@ async function autoFillWord() {
   }
 }
 
-function handleFormSubmit(event) {
+async function handleFormSubmit(event) {
   event.preventDefault();
   const word = elements.WordField.value.trim();
   if (!word) {
     showStatus('英文單字為必填。', 'error');
     return;
   }
+
   const newItem = {
     word,
     translate: elements.translateField.value.trim(),
@@ -233,18 +261,30 @@ function handleFormSubmit(event) {
     example: elements.exampleField.value.trim(),
     root: elements.rootField.value.trim()
   };
-  if (editingIndex !== null && editingIndex >= 0 && editingIndex < cards.length) {
+
+  elements.saveButton.disabled = true;
+  showStatus('正在儲存單字並送出後端...', 'info');
+
+  const isEdit = editingIndex !== null && editingIndex >= 0 && editingIndex < cards.length;
+  if (isEdit) {
     cards[editingIndex] = newItem;
-    showStatus('單字已更新。', 'success');
   } else {
     cards.push(newItem);
-    showStatus('已新增單字。', 'success');
   }
+
   saveCards();
   updateWordOptions();
   renderWordList();
   renderCard();
   setFormValues();
+
+  const backendResult = await sendWordToBackend(newItem);
+  if (backendResult.ok) {
+    showStatus(isEdit ? '單字已更新，已同步至後端。' : '已新增單字，已同步至後端。', 'success');
+  } else {
+    showStatus(`儲存成功，但後端同步失敗：${backendResult.error}`, 'warning');
+  }
+  elements.saveButton.disabled = false;
 }
 
 function handleListClick(event) {
